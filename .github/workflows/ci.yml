@@ -60,7 +60,7 @@ jobs:
           - target: riscv64gc-unknown-linux-gnu
             artifact_name: riscv64-test-riscv64gc-unknown-linux-gnu
             binary_path: target/riscv64gc-unknown-linux-gnu/release/riscv64-test
-            install_packages: "build-essential gcc g++ pkg-config meson ninja-build autoconf automake libtool m4 bison flex gperf gettext pkg-config-riscv64-linux-gnu binutils-riscv64-linux-gnu gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross"
+            install_packages: "build-essential gcc g++ pkg-config meson ninja-build autoconf automake libtool m4 bison flex gperf gettext binutils-riscv64-linux-gnu gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross"
             build_cmd: ./scripts/build-riscv64.sh
     steps:
       - name: Checkout
