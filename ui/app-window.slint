@@ -1,0 +1,58 @@
+import { Button } from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    in-out property <string> status_text: "Ready";
+    in-out property <bool> dark_theme: true;
+    callback left_clicked();
+    callback right_clicked();
+    preferred-width: 1024px;
+    preferred-height: 600px;
+
+    private property <color> bg_color: dark_theme ? #111827 : #f3f4f6;
+    private property <color> text_color: dark_theme ? #f9fafb : #111827;
+
+    background: bg_color;
+
+    VerticalLayout {
+        width: parent.width;
+        height: parent.height;
+        spacing: 18px;
+        padding-left: 28px;
+        padding-right: 28px;
+        padding-top: 28px;
+        padding-bottom: 28px;
+
+        Text {
+            text: root.status_text;
+            color: text_color;
+            font-size: 34px;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            min-height: 64px;
+        }
+
+        HorizontalLayout {
+            spacing: 24px;
+            vertical-stretch: 1;
+
+            Button {
+                text: "Button A";
+                primary: true;
+                horizontal-stretch: 1;
+                vertical-stretch: 1;
+                clicked => {
+                    root.left_clicked();
+                }
+            }
+
+            Button {
+                text: "Button B";
+                horizontal-stretch: 1;
+                vertical-stretch: 1;
+                clicked => {
+                    root.right_clicked();
+                }
+            }
+        }
+    }
+}

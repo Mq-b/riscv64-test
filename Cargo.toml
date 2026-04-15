@@ -3,4 +3,26 @@ name = "riscv64-test"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
+[target.'cfg(target_arch = "riscv64")'.dependencies]
+slint = { version = "1.15.1", default-features = false, features = [
+    "std",
+    "compat-1-2",
+    "backend-linuxkms-noseat",
+    "renderer-software",
+] }
+i-slint-common = { version = "=1.15.1", features = ["fontconfig-dlopen"] }
+
+[target.'cfg(not(target_arch = "riscv64"))'.dependencies]
+slint = { version = "1.15.1", default-features = false, features = [
+    "std",
+    "compat-1-2",
+    "backend-winit-wayland",
+    "renderer-software",
+] }
+i-slint-common = { version = "=1.15.1", features = ["fontconfig-dlopen"] }
+
+[build-dependencies]
+slint-build = "1.15.1"
+
+[patch.crates-io]
+i-slint-backend-linuxkms = { path = "vendor/i-slint-backend-linuxkms-1.15.1" }
