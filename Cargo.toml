@@ -23,6 +23,3 @@ i-slint-common = { version = "=1.15.1", features = ["fontconfig-dlopen"] }
 
 [build-dependencies]
 slint-build = "1.15.1"
-
-[patch.crates-io]
-i-slint-backend-linuxkms = { path = "vendor/i-slint-backend-linuxkms-1.15.1" }

@@ -57,13 +57,11 @@ jobs:
             binary_path: target/x86_64-unknown-linux-gnu/release/riscv64-test
             install_packages: "build-essential gcc g++ pkg-config libwayland-dev wayland-protocols libxkbcommon-dev libdrm-dev libudev-dev"
             build_cmd: cargo build --release --target x86_64-unknown-linux-gnu
-            rust_env: RUST_FONTCONFIG_DLOPEN=1
           - target: riscv64gc-unknown-linux-gnu
             artifact_name: riscv64-test-riscv64gc-unknown-linux-gnu
             binary_path: target/riscv64gc-unknown-linux-gnu/release/riscv64-test
-            install_packages: "build-essential gcc g++ pkg-config binutils-riscv64-linux-gnu gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross"
+            install_packages: "build-essential gcc g++ pkg-config meson ninja-build autoconf automake libtool m4 bison flex gperf gettext pkg-config-riscv64-linux-gnu binutils-riscv64-linux-gnu gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross"
             build_cmd: ./scripts/build-riscv64.sh
-            rust_env: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,7 +80,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Build release binary
-        run: ${{ matrix.rust_env }} ${{ matrix.build_cmd }}
+        run: ${{ matrix.build_cmd }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

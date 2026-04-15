@@ -18,13 +18,16 @@
 - 链接器：`riscv64-linux-gnu-gcc`
 - `rustflags`：`-C target-feature=+crt-static`
 
-构建命令：
+主机至少需要可用的交叉工具链：`riscv64-linux-gnu-gcc/g++`、`pkg-config`、`ninja`。  
+其余构建工具（如 `meson/m4/gperf/bison`）在缺失时会由脚本自动下载源码构建到本地工具目录。
+
+先构建 `riscv64` 目标静态依赖（源码下载并交叉编译到本地目录）：
 
 ```bash
-PKG_CONFIG_ALLOW_CROSS=1 RUST_FONTCONFIG_DLOPEN=1 cargo build --release --target riscv64gc-unknown-linux-gnu
+./scripts/build-riscv64-deps.sh
 ```
 
-或使用仓库脚本（自动设置交叉编译环境变量）：
+再编译应用（脚本会 `source` 环境变量；如果缺依赖会自动触发上一步）：
 
 ```bash
 ./scripts/build-riscv64.sh
@@ -71,7 +74,14 @@ SLINT_BACKEND_LINUXFB=1 \
 ## 备注
 
 - `Cargo.toml` 已按目标架构分流依赖：`riscv64` 使用 `linuxkms`，其他架构使用 `winit-wayland`。
-- 为了避免宿主机缺少 `riscv64` 版 `libudev/libinput` 开发包导致交叉编译失败，项目通过 [vendor/i-slint-backend-linuxkms-1.15.1](/home/mq-b/project/rust/riscv64-test/vendor/i-slint-backend-linuxkms-1.15.1) 打了本地补丁，移除了构建期输入栈依赖。
-- 上述补丁会让 `riscv64` 构建先保证“可编译可显示”；若你需要键盘/触摸输入，再恢复官方 backend 并配置目标系统的 `libudev/libinput` 交叉依赖。
+- 已恢复官方 `linuxkms` 输入链路（`libudev + libinput + xkbcommon`），可用于键盘/触摸输入。
+- `scripts/build-riscv64-deps.sh` 会下载并交叉编译这些依赖为静态库，默认安装到 `.local/riscv64`。
+- 第一次运行会在 `.deps/riscv64` 下缓存源码和主机工具（`m4/gperf/bison/meson`），后续会复用。
+- 公共交叉环境由 `scripts/riscv64-env.sh` 提供，构建脚本会自动 `source`，你也可以手动加载：
+
+  ```bash
+  source scripts/riscv64-env.sh
+  ```
+
 - 访问 `/dev/fb0`、`/dev/input*`、`/dev/tty*` 通常需要 root 权限或对应设备权限。
 - 如果你的系统有 DRM/KMS，去掉 `SLINT_BACKEND_LINUXFB=1` 也可尝试让 Slint 自动选择显示路径。
